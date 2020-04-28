@@ -1,0 +1,281 @@
+<html>
+<head>
+	<title>Pacman</title>
+	<style>
+		*{
+			padding:0px;
+			margin:0px;
+		}
+		body{
+			background-color:black;
+			color:white;
+		}
+		div.row{
+			margin:0px;
+			padding:0px;
+		}
+		div.row div {
+			width:20px;
+			height:20px;
+			display:inline-block;
+		}
+		div#container, div.container{
+			position:relative;
+			margin-top:15px;
+			width:500px;
+			margin:0px auto;
+		}
+		.brick{
+			background-color: blue;
+		}
+		.empty{
+			background-color: black;
+		}
+		.coin{
+			background: url('coin.gif');
+			background-size: 20px;
+		}
+		.cherry
+		{
+			background: url('cherry.png');
+			background-size: 20px;
+		}
+		.ghost
+		{
+			background: url('ghost.jpg');
+			background-size: 20px;
+		}
+		#pacman{
+			width:20px;
+			height:20px;
+			display:inline-block;
+			background: url('pacman.gif');
+			background-size:cover;
+			position:absolute;
+			top:0px;
+			left:24px;
+		}
+		#score{
+			position:absolute;
+			top: 0px;
+			left: 500px;
+			border: 1px solid grey;
+			width: 50px;
+			height: 40px;
+			font-size: 24px;
+			text-align:center;
+			padding: 10px;
+		}
+	</style>
+
+</head>
+<body>
+	<div class='container'><h2>Pacman Demo</h2></div>
+	<div id='container'>
+		<div id='pacman'></div>
+		<div id='maze'>
+			
+		</div>
+		<div id='score'>
+			<p id="scoreboard"></p>
+		</div>
+
+		<h2>Homework</h2>
+
+		<ul>
+			<li>(1 pt) Make the score show up! DONE</li>
+			<li>(2 pts)Have the character go up/down DONE</li>
+			<li>(2 pts)Make the maze a lot more interesting DONE</li>
+			<li>(1 pt)Have cherry appear.  Cherry is worth 100 points DONE.</li>
+			<li>(4 pts)Prevent the character from moving past the wall DONE</li>
+			<li>Optional: Add any other cool features</li>
+			<li>Upload a video of your work showing your features. Do NOT upload source code and ruin the fun for others.</li>
+		</ul>
+
+	</div>
+	<script>
+	
+	var world = [];
+	for (var i = 0; i < 25; i ++)
+	{
+		var temp = [];
+		for (var j = 0; j < 25; j++)
+		{
+			if (i == 0 || j == 0 || i == 24 || j == 24)
+			{
+				temp.push(0);
+			}
+			else if (i == 4 && (j>3 && j<11) || i == 4 && (j>13 && j<21))
+			{
+				temp.push(0);
+			}
+			else if (i == 7 && (j>3 && j<11) || i == 7 && (j>13 && j<21))
+			{
+				temp.push(0);
+			}
+			else if (j == 10 && (i>4 && i<7) || j == 14 &&(i>4 && i<7))
+			{
+				temp.push(0);
+			}
+			else if (j == 9 && (i>9 && i<14) || j == 15 &&(i>9 && i<14))
+			{
+				temp.push(0);
+			}
+			else if (i == 15 && (j>9 && j<15))
+			{
+				temp.push(0);
+			}
+			else if (i == 20 && (j>7 && j<17))
+			{
+				temp.push(0);
+			}
+			else if (i == 19 && (j==7 || j==17))
+			{
+				temp.push(0);
+			}
+			else if (i == 18 && (j==6 || j==18))
+			{
+				temp.push(0);
+			}
+			else if (i == 17 && (j==6 || j==18))
+			{
+				temp.push(0);
+			}
+			else if (j == 12 && (i>10 && i<15))
+			{
+				temp.push(0);
+			}
+			else if ((i == 6 && j ==9) || (i == 6 && j ==15))
+			{
+				temp.push(3);
+			}
+			else
+			{
+				temp.push(1);
+			}
+		}
+		world.push(temp);
+	}
+	/*var world = [
+		[0,0,0,0,0,0,0,0,0,0,0],
+		[0,1,1,1,1,1,1,1,3,1,0],
+		[0,1,0,1,0,1,1,1,1,1,0],
+		[0,1,1,1,1,1,1,1,1,1,0],
+		[0,1,0,1,0,1,1,1,1,1,0],
+		[0,1,1,1,1,1,1,1,1,1,0],
+		[0,1,1,1,1,1,1,1,1,1,0],
+		[0,1,1,1,1,1,1,1,1,1,0],
+		[0,1,1,1,1,1,1,1,1,1,0],
+		[0,0,0,0,0,0,0,0,0,0,0]
+	];*/
+
+	var pacman = {
+		x: 0,
+		y: 1
+	}
+
+	var score = 0;
+	document.getElementById("scoreboard").innerHTML = score;
+	
+	document.onkeypress= function(e){
+		//if the user pressed 'A'
+		//console.log('keyCode is', e.keyCode);
+		if(e.keyCode == 97 && world[pacman.x-1][pacman.y] != 0){
+			pacman.x--;
+		}
+		//if the user pressed 'D'
+		else if(e.keyCode == 100 && world[pacman.x+1][pacman.y] != 0){
+			pacman.x++;
+		}
+		else if(e.keyCode == 115 && world[pacman.x][pacman.y+1] != 0)
+		{
+			pacman.y++;
+		}
+		else if(e.keyCode == 119 && world[pacman.x][pacman.y-1] != 0)
+		{
+			pacman.y--;
+		}
+		console.log("x=",pacman.x);
+		console.log("y=",pacman.y);
+		console.log("left ",world[pacman.x-1][pacman.y],"; right ",world[pacman.x+1][pacman.y],"; up ", world[pacman.x][pacman.y-1],"; down ",world[pacman.x-1][pacman.y-1]);
+		//see if the pacman is setting on top of the coin!!!
+		if(world[pacman.y][pacman.x] == 1){
+			world[pacman.y][pacman.x] = 2;
+			score += 10;
+			console.log('score is now', score);
+			document.getElementById("scoreboard").innerHTML = score;
+		}
+		//see if the pacman is setting on top of cherry!!!
+		if(world[pacman.y][pacman.x] == 3)
+		{
+			world[pacman.y][pacman.x] = 2;
+			score += 100;
+			console.log('score is now', score);
+			document.getElementById("scoreboard").innerHTML = score;
+		}
+
+		drawPacman();
+		drawMaze();
+	}
+
+	drawMaze();
+	drawPacman();
+
+	function drawPacman()
+	{	
+		document.getElementById('pacman').style.top = pacman.y*20;
+		document.getElementById('pacman').style.left = pacman.x*20;
+	}
+
+	function drawMaze(){
+		var output = '';
+
+		for(var i=0; i<world.length; i++){
+			output += "<div class='row'>";
+
+			for(var j=0; j<world[i].length; j++){
+				if(world[i][j] == 0) {
+					output +="<div class='brick'></div>";
+				}
+				else if(world[i][j] == 1) {
+					output +="<div class='coin'></div>";
+				}
+				else if(world[i][j] == 2) {
+					output +="<div class='empty'></div>";
+				}
+				else if(world[i][j] == 3)
+				{
+					output +="<div class='cherry'></div>";
+				}
+			}
+			output +="</div>";
+		}
+
+		document.getElementById('maze').innerHTML = output;
+
+		// console.log('output is', output);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</script>
+
+
+</body>
+</html>
